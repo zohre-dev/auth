@@ -45,6 +45,7 @@ export const LoginContainer = styled.div`
     padding: 10px;
     font-weight: bold;
     cursor: pointer;
+    font-family: "YekanBakh bold";
   }
   .googleAccount {
     width: 448px;
@@ -56,6 +57,7 @@ export const LoginContainer = styled.div`
     gap: 15px;
     font-weight: bold;
     cursor: pointer;
+    font-family: "YekanBakh bold";
   }
   .bottomBoxTxt {
     margin: 15px 0;

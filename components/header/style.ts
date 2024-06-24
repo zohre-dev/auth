@@ -5,6 +5,7 @@ export const PicWarraper = styled.div`
   width: 100%;
   height: 900px;
   background-image: url("assets/images/header.jpg");
+  background-size: cover;
   background-repeat: no-repeat;
   position: relative;
   .headerText {

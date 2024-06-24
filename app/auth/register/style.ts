@@ -20,17 +20,7 @@ export const RegisterContainer = styled.div`
     flex-direction: column;
     gap: 16px;
   }
-  form div:first-child {
-    display: flex;
-    gap: 21px;
-    width: 448px;
-  }
-  .name {
-    flex: 1;
-  }
-  .lname {
-    flex: 1.5;
-  }
+
   .inputs {
     background-color: #d9d9d9;
     outline: none;
@@ -46,5 +36,6 @@ export const RegisterContainer = styled.div`
     padding: 10px;
     font-weight: bold;
     cursor: pointer;
+    font-family: "YekanBakh bold";
   }
 `;

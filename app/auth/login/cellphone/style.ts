@@ -45,6 +45,7 @@ export const CellFormContainer = styled.div`
     padding: 10px;
     font-weight: bold;
     cursor: pointer;
+    font-family: "YekanBakh bold";
   }
 
   .bottomBoxTxt a {
