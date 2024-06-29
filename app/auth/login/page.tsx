@@ -1,47 +1,74 @@
+"use client";
+import { IFormState } from "@/utils/stateForm";
+import { Button, Form, Input, message, Typography } from "antd";
+import { useEffect, useReducer, useState } from "react";
 import { LoginContainer } from "./style";
+import { signIn, signUp } from "@/actions/auth";
+import { useRouter } from "next/navigation";
+import { useAppContext } from "@/context/AuthContext";
+
+export interface IFormInputs {
+  email: string;
+  password: string;
+}
 
 export default function Login() {
+  const [messageApi, contextHolder] = message.useMessage();
+  const [form] = Form.useForm();
+  const [resultMessage, setResultMessage] = useState<IFormState>();
+  const { func } = useAppContext();
+  const { loginUser } = func;
+  const router = useRouter();
+
+  async function onFinish(data: IFormInputs) {
+    const formData = new FormData();
+
+    formData.append("password", data.password);
+    formData.append("email", data.email);
+
+    const result = await signIn(formData);
+    setResultMessage(result);
+  }
+  useEffect(() => {
+    messageApi.open({
+      type: resultMessage?.notify?.status,
+      content: resultMessage?.notify?.message,
+    });
+    if (resultMessage?.notify?.status === "success") {
+      loginUser(resultMessage.userInfo);
+      router.push("/");
+    }
+  }, [resultMessage]);
   return (
     <LoginContainer>
-      <div className="wrapper">
-        <span className="title">ورود با ایمیل </span>
-        <div className="topBoxTxt">
-          <span>حساب کاربری ندارید؟</span>
-          <a href="/auth/register" className="registerTxt">
-            ثبت نام کنید
-          </a>
-        </div>
-        <form>
-          <div>
-            <input
-              className="emial inputs"
-              type="text"
-              placeholder="آدرس ایمیل"
-            />
-          </div>
-          <div>
-            <input
-              className="password inputs"
-              type="text"
-              placeholder="رمز عبور"
-            />
-          </div>
+      {resultMessage?.notify?.status !== undefined && contextHolder}
+      <Form form={form} onFinish={onFinish}>
+        <Typography.Title level={2}>ورود</Typography.Title>
 
-          <button className="submitBtn">ورود</button>
-        </form>
-        <button className="googleAccount">
-          ورود با اکانت گوگل
-          <img src="/assets/images/google.png" />
-        </button>
-        <div className="bottomBoxTxt">
-          <a href="/auth/login/cellphone" className="mobileTxt">
-            ورود با موبایل
-          </a>
-          <a href="#" className="forgetTxt">
-            فراموشی رمز عبور
-          </a>
-        </div>
-      </div>
+        <Form.Item
+          label="ایمیل"
+          name="email"
+          rules={[
+            { required: true, message: "اجباری" },
+            { type: "email", message: "فرمت نادرست" },
+          ]}
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
+          label="گذرواژه"
+          name="password"
+          rules={[{ min: 5, message: "حداقل 5 کاراکتر" }]}
+        >
+          <Input.Password />
+        </Form.Item>
+
+        <Form.Item>
+          <Button type="primary" htmlType="submit">
+            Submit
+          </Button>
+        </Form.Item>
+      </Form>
     </LoginContainer>
   );
 }

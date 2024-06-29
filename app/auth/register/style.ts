@@ -7,7 +7,7 @@ export const RegisterContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  .wrapper {
+  /* .wrapper {
     background-color: #fff;
     padding: 50px 100px;
   }
@@ -37,5 +37,5 @@ export const RegisterContainer = styled.div`
     font-weight: bold;
     cursor: pointer;
     font-family: "YekanBakh bold";
-  }
+  } */
 `;

@@ -7,7 +7,7 @@ export const LoginContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  .wrapper {
+  /* .wrapper {
     background-color: #fff;
     padding: 50px 100px;
   }
@@ -67,5 +67,5 @@ export const LoginContainer = styled.div`
   }
   .bottomBoxTxt a {
     color: inherit;
-  }
+  } */
 `;
