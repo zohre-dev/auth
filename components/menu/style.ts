@@ -21,6 +21,8 @@ export const Nav = styled.div`
     padding: 10px;
     background-color: #d4b170;
     border-radius: 10px;
+    border: none;
+    cursor: pointer;
   }
   .signIn {
     border-radius: 10px;

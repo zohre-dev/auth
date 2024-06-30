@@ -3,7 +3,6 @@
 import { getFetch, postFetch } from "@/utils/fetch";
 import { IFormState } from "@/utils/stateForm";
 import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
 
 async function signUp(data: FormData) {
   const formData = Object.fromEntries(data);
@@ -66,8 +65,8 @@ async function signIn(data: FormData) {
 async function me() {
   const token = cookies().get("loginToken");
 
-  if (token === undefined) {
-    console.log("token", token);
+  //token is undefind or null:
+  if (!token) {
     const reportMessage: IFormState = {
       userInfo: undefined,
     };
@@ -76,24 +75,25 @@ async function me() {
   const res = await getFetch("/users/me", {
     Authorization: `Bearer ${token.value}`,
   });
-  if (res.user !== null) {
-    const reportMessage: IFormState = {
-      userInfo: res.user,
-    };
-    return reportMessage;
-  } else {
+
+  if (!res.user) {
     const reportMessage: IFormState = {
       userInfo: undefined,
     };
     return reportMessage;
   }
+
+  const reportMessage: IFormState = {
+    userInfo: res.user,
+  };
+  return reportMessage;
 }
 
 async function logout() {
   const token = cookies().get("loginToken");
 
-  if (token === undefined) {
-    console.log("token", token);
+  //token is undefind or null:
+  if (!token) {
     const reportMessage: IFormState = {
       userInfo: undefined,
     };

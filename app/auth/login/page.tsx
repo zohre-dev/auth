@@ -13,8 +13,8 @@ export interface IFormInputs {
 }
 
 export default function Login() {
-  const [messageApi, contextHolder] = message.useMessage();
   const [form] = Form.useForm();
+  const [messageApi, contextHolder] = message.useMessage();
   const [resultMessage, setResultMessage] = useState<IFormState>();
   const { func } = useAppContext();
   const { loginUser } = func;
@@ -35,7 +35,7 @@ export default function Login() {
       content: resultMessage?.notify?.message,
     });
     if (resultMessage?.notify?.status === "success") {
-      loginUser(resultMessage.userInfo);
+      loginUser(resultMessage.userInfo); // setUser(user); in context file
       router.push("/");
     }
   }, [resultMessage]);
