@@ -11,6 +11,7 @@ export default function Menu() {
   const { user } = values;
   const { logoutUser } = func;
   const router = useRouter();
+  console.log(user);
 
   return (
     <Nav>
@@ -30,9 +31,10 @@ export default function Menu() {
             مبلمان
           </Link>
         </li>
-
-        {user && Object.keys(user).length > 0 ? (
+        {/* && Object.keys(user).length > 0 */}
+        {user ? (
           <>
+            {/* {user["name"]} */}
             <li className="menuItem">
               <Link className="menuLink signIn" href="/profile">
                 پروفایل
