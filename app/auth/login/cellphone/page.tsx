@@ -1,27 +1,28 @@
+"use client";
+
+import { Typography } from "antd";
 import { CellFormContainer } from "./style";
+import { useState } from "react";
+import PhoneForm from "@/components/login/phone/phoneForm";
+import OtpForm from "@/components/login/otp/otpForm";
 
 export default function CellLoginForm() {
+  const [step, setStep] = useState(1);
+
   return (
     <CellFormContainer>
       <div className="wrapper">
-        <span className="title">ورود با موبایل </span>
+        <Typography.Title className="formTitle" level={3}>
+          ورود با موبایل
+        </Typography.Title>
         <div className="topBoxTxt">
           <span>حساب کاربری ندارید؟</span>
-          <a href="/auth/register" className="registerTxt">
+          <Typography.Link className="registerTxt" href="/auth/register">
             ثبت نام کنید
-          </a>
+          </Typography.Link>
         </div>
-
-        <form>
-          <input className="cellphone" type="text" placeholder="شماره موبایل" />
-
-          <button className="submitBtn">ورود</button>
-        </form>
-        <div className="bottomBoxTxt">
-          <a href="/auth/login" className="mobileTxt">
-            ورود با ایمیل
-          </a>
-        </div>
+        {step === 1 && <PhoneForm setStep={setStep} />}
+        {step === 2 && <OtpForm />}
       </div>
     </CellFormContainer>
   );

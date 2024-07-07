@@ -1,4 +1,5 @@
 import { ContactWarraper } from "./style";
+import phone from "@/public/assets/images/phone.jpg";
 
 export default function ContactUs() {
   return (
@@ -35,7 +36,7 @@ export default function ContactUs() {
         </form>
       </div>
       <div className="left">
-        <img src="assets/images/phone.jpg" />
+        <img src={phone.src} />
       </div>
     </ContactWarraper>
   );

@@ -1,4 +1,7 @@
 import { ProductWarraper } from "./style";
+import firstpic from "@/public/assets/images/1.jpg";
+import secondpic from "@/public/assets/images/2.jpg";
+import thirdpic from "@/public/assets/images/3.jpg";
 
 export default function AboutUs() {
   return (
@@ -17,17 +20,17 @@ export default function AboutUs() {
       </div>
       <div className="productConatiner">
         <div className="card">
-          <img className="img" src="assets/images/1.jpg" />
+          <img className="img" src={firstpic.src} />
           <p className="title">صندلی سفید با پایه های مارپیچ سفید</p>
           <p className="price">10,000,000 تومان</p>
         </div>
         <div className="card">
-          <img className="img" src="assets/images/2.jpg" />
+          <img className="img" src={secondpic.src} />
           <p className="title">صندلی مشکی با پایه های بلند</p>
           <p className="price">10,000,000 تومان</p>
         </div>
         <div className="card">
-          <img className="img" src="assets/images/3.jpg" />
+          <img className="img" src={thirdpic.src} />
 
           <p className="title">صندلی قهوایی روشن با پایه های چوبی</p>
           <p className="price">10,000,000 تومان</p>

@@ -1,17 +1,23 @@
 "use client";
 import { IFormState } from "@/utils/stateForm";
-import { Button, Form, Input, message, Typography } from "antd";
-import { useEffect, useReducer, useState } from "react";
+import { Button, Flex, Form, Input, message, Typography } from "antd";
+import { useEffect, useState } from "react";
 import { LoginContainer } from "./style";
-import { signIn, signUp } from "@/actions/auth";
+import { signIn } from "@/actions/auth";
 import { useRouter } from "next/navigation";
 import { useAppContext } from "@/context/AuthContext";
+import { ILoginArguments } from "@/services/users/models";
 
-export interface IFormInputs {
-  email: string;
-  password: string;
-}
-
+const formItemLayout = {
+  labelCol: {
+    xs: {
+      span: 24,
+    },
+    sm: {
+      span: 8,
+    },
+  },
+};
 export default function Login() {
   const [form] = Form.useForm();
   const [messageApi, contextHolder] = message.useMessage();
@@ -20,13 +26,9 @@ export default function Login() {
   const { loginUser } = func;
   const router = useRouter();
 
-  async function onFinish(data: IFormInputs) {
+  async function onFinish(data: ILoginArguments) {
     const formData = new FormData();
-
-    formData.append("password", data.password);
-    formData.append("email", data.email);
-
-    const result = await signIn(formData);
+    const result = await signIn(data);
     setResultMessage(result);
   }
   useEffect(() => {
@@ -42,9 +44,21 @@ export default function Login() {
   return (
     <LoginContainer>
       {resultMessage?.notify?.status !== undefined && contextHolder}
-      <Form form={form} onFinish={onFinish}>
-        <Typography.Title level={2}>ورود</Typography.Title>
-
+      <Form
+        {...formItemLayout}
+        form={form}
+        onFinish={onFinish}
+        className="loginForm"
+      >
+        <Typography.Title level={3} className="formTitle">
+          ورود با ایمیل
+        </Typography.Title>
+        <div className="topBoxTxt">
+          <span>حساب کاربری ندارید؟</span>
+          <Typography.Link className="registerTxt" href="/auth/register">
+            ثبت نام کنید
+          </Typography.Link>
+        </div>
         <Form.Item
           label="ایمیل"
           name="email"
@@ -64,10 +78,18 @@ export default function Login() {
         </Form.Item>
 
         <Form.Item>
-          <Button type="primary" htmlType="submit">
-            Submit
+          <Button type="primary" htmlType="submit" block>
+            ورود با اکانت گوگل
           </Button>
         </Form.Item>
+        <Flex justify="space-between" align="center">
+          <Typography.Link href="/auth/login/cellphone">
+            ورود با موبایل
+          </Typography.Link>
+          <Button type="primary" htmlType="submit">
+            ورود
+          </Button>
+        </Flex>
       </Form>
     </LoginContainer>
   );

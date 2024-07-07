@@ -1,5 +1,5 @@
 const baseUrl = "https://api.mv-team.ir/api";
-const getFetch = async (url: string, headers: {} = {}) => {
+const getFetch = async (url: string, headers?: HeadersInit) => {
   try {
     const response = await fetch(`${baseUrl}${url}`, {
       method: "GET",
@@ -19,7 +19,11 @@ const getFetch = async (url: string, headers: {} = {}) => {
   }
 };
 
-const postFetch = async (url: string, body: {} = {}, headers: {} = {}) => {
+const postFetch = async (
+  url: string,
+  body: Record<string, any>,
+  headers?: HeadersInit
+) => {
   try {
     const response = await fetch(`${baseUrl}${url}`, {
       method: "POST",
@@ -32,6 +36,7 @@ const postFetch = async (url: string, body: {} = {}, headers: {} = {}) => {
       body: JSON.stringify(body),
     });
     const data = await response.json();
+
     return data;
   } catch (error) {
     throw new Error(`Fail to Fetch , error is : ${error}`);

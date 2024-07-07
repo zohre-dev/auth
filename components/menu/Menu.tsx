@@ -11,7 +11,6 @@ export default function Menu() {
   const { user } = values;
   const { logoutUser } = func;
   const router = useRouter();
-  console.log(user);
 
   return (
     <Nav>

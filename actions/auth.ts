@@ -1,17 +1,29 @@
 "use server";
 
+import {
+  IRegisterArguments,
+  IPhoneArguments,
+  IOtpArguments,
+  ILoginArguments,
+} from "@/services/users/models";
+import { UsersUrls } from "@/services/users/urls";
 import { getFetch, postFetch } from "@/utils/fetch";
 import { IFormState } from "@/utils/stateForm";
+import { message } from "antd";
 import { cookies } from "next/headers";
 
-async function signUp(data: FormData) {
-  const formData = Object.fromEntries(data);
-  const name = formData.name;
-  const password = formData.password;
-  const email = formData.email;
-  const phoneNumber = formData.phoneNumber;
+async function signUp(data: IRegisterArguments) {
+  const name = data.name;
+  const password = data.password;
+  const email = data.email;
+  const phoneNumber = data.phoneNumber;
 
-  const res = await postFetch("/users", { name, password, email, phoneNumber });
+  const res = await postFetch(UsersUrls.users, {
+    name,
+    password,
+    email,
+    phoneNumber,
+  });
 
   if (res.errors) {
     const reportMessage: IFormState = {
@@ -31,10 +43,9 @@ async function signUp(data: FormData) {
   return seccessMessage;
 }
 
-async function signIn(data: FormData) {
-  const formData = Object.fromEntries(data);
-  const password = formData.password;
-  const email = formData.email;
+async function signIn(data: ILoginArguments) {
+  const email = data.email;
+  const password = data.password;
 
   const res = await postFetch("/users/login", { password, email });
 
@@ -63,13 +74,13 @@ async function signIn(data: FormData) {
 }
 
 async function me() {
+  // let reportMessage: IFormState = { userInfo: undefined };
+  let reportMessage: IFormState = {};
   const token = cookies().get("loginToken");
 
   //token is undefind or null:
   if (!token) {
-    const reportMessage: IFormState = {
-      userInfo: undefined,
-    };
+    reportMessage.userInfo = undefined;
     return reportMessage;
   }
   const res = await getFetch("/users/me", {
@@ -77,15 +88,11 @@ async function me() {
   });
 
   if (!res.user) {
-    const reportMessage: IFormState = {
-      userInfo: undefined,
-    };
+    reportMessage.userInfo = undefined;
     return reportMessage;
   }
 
-  const reportMessage: IFormState = {
-    userInfo: res.user,
-  };
+  reportMessage.userInfo = res.user;
   return reportMessage;
 }
 
@@ -120,4 +127,71 @@ async function logout() {
     return reportMessage;
   }
 }
-export { signUp, signIn, me, logout };
+
+//data: { cellphone: '09350070000' }
+async function signInWithPhone(data: IPhoneArguments) {
+  let reportMessage: IFormState = {
+    notify: {
+      status: undefined,
+      message: "",
+    },
+  };
+  const phoneNumber = data.cellphone;
+  const pattern = /^(\+98|0)?9\d{9}$/;
+  if (!pattern.test(phoneNumber)) {
+    reportMessage.notify!.status = "error";
+    reportMessage.notify!.message = "فرمت نامعتبر";
+    return reportMessage;
+  }
+  const res = await postFetch(UsersUrls.loginByPhoneNumber, {
+    phoneNumber,
+  });
+
+  //"success": false
+  if (!res.success) {
+    reportMessage.notify!.status = "error";
+    // reportMessage.notify!.message = res.message;
+    reportMessage.notify!.message = "ابتدا ثبت نام کنید";
+    return reportMessage;
+  }
+  //"success": true
+  reportMessage.notify!.status = "success";
+  reportMessage.notify!.message = "کد ورود با موفقیت ارسال شد";
+  reportMessage.userCellPhone = phoneNumber;
+  return reportMessage;
+}
+
+async function confirmOtp(data: IOtpArguments) {
+  const password = data.password;
+  const code = data.otp;
+  const phoneNumber = data.cellphone;
+  const res = await postFetch(UsersUrls.confirmCode, {
+    password,
+    code,
+    phoneNumber,
+  });
+  let reportMessage: IFormState = {
+    notify: {
+      status: undefined,
+      message: "",
+    },
+  };
+
+  //"success": false,
+  // if (!res.success) {
+  if (res.success === false) {
+    reportMessage.notify!.status = "error";
+    reportMessage.notify!.message = res.message;
+    return reportMessage;
+  }
+  if (res.error) {
+    reportMessage.notify!.status = "error";
+    reportMessage.notify!.message = res.error;
+    return reportMessage;
+  }
+  reportMessage.notify!.status = "success";
+  reportMessage.notify!.message = "با موفقیت وارد شدید";
+  reportMessage.userInfo = res.doc.user;
+  return reportMessage;
+}
+export { signUp, signIn, me, signInWithPhone, confirmOtp, logout };

@@ -1,3 +1,4 @@
+import { IUserInfo } from "@/services/users/models";
 import { NoticeType } from "antd/es/message/interface";
 
 export interface IFormState {
@@ -5,7 +6,8 @@ export interface IFormState {
     status: NoticeType | undefined;
     message: string;
   };
-  userInfo?: Record<string, unknown>;
+  userInfo?: IUserInfo;
+  userCellPhone?: string;
 }
 
 // userInfo: {

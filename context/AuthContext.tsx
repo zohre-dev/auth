@@ -1,6 +1,16 @@
 "use client";
 import { me } from "@/actions/auth";
-import { createContext, useContext, useEffect, useState } from "react";
+import { IUserInfo } from "@/services/users/models";
+import {
+  Dispatch,
+  FC,
+  PropsWithChildren,
+  SetStateAction,
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 
 /**************************************************************************************** */
 // user: {
@@ -17,14 +27,17 @@ import { createContext, useContext, useEffect, useState } from "react";
 //         }
 
 /**************************************************************************************** */
-type userType = Record<string, unknown>;
 
 interface IContext {
   values: {
-    user: userType | undefined;
+    user: IUserInfo | undefined;
+    userCellPhone: string | undefined;
+  };
+  dispatch: {
+    setCellPhone: Dispatch<SetStateAction<string | undefined>>;
   };
   func: {
-    loginUser: (user: userType | undefined) => void;
+    loginUser: (user: IUserInfo | undefined) => void;
     logoutUser: () => void;
   };
 }
@@ -32,6 +45,10 @@ interface IContext {
 const AuthContext = createContext<IContext>({
   values: {
     user: undefined,
+    userCellPhone: undefined,
+  },
+  dispatch: {
+    setCellPhone: () => {},
   },
   func: {
     loginUser: () => {},
@@ -39,18 +56,24 @@ const AuthContext = createContext<IContext>({
   },
 });
 /**************************************************************************************** */
-export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<userType>();
+export const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
+  const [user, setUser] = useState<IUserInfo>();
+  const [cellPhone, setCellPhone] = useState<string | undefined>();
 
-  const loginContext = (user: userType | undefined) => {
+  const loginContext = (user: IUserInfo | undefined) => {
     setUser(user);
   };
   const logoutContext = () => {
     setUser(undefined);
   };
+
   const contextValues: IContext = {
     values: {
       user: user,
+      userCellPhone: cellPhone,
+    },
+    dispatch: {
+      setCellPhone,
     },
     func: {
       loginUser: loginContext,
