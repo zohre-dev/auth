@@ -1,9 +1,8 @@
 import { AuthProvider } from "@/context/AuthContext";
 import "./globals.css";
-import { Suspense } from "react";
-import Loading from "@/components/Loading";
+
 import NextNProgressbar from "@/libraries/NextNProgressbar";
-import { ConfigProvider } from "antd";
+import { AppConfigProvider } from "@/components/Providers/ConfigProvider";
 
 export default function RootLayout({
   children,
@@ -11,27 +10,11 @@ export default function RootLayout({
   return (
     <html lang="fa" dir="rtl">
       <body>
-        <ConfigProvider
-          direction="rtl"
-          theme={{
-            components: {
-              // #d9d9d9
-              Button: {
-                colorPrimary: "#d4b170",
-                algorithm: true, // Enable algorithm
-                fontSize: 16,
-              },
-              Input: {
-                colorPrimary: "#d4b170 ",
-                algorithm: true, // Enable algorithm
-              },
-            },
-          }}
-        >
+        <AppConfigProvider>
           <AuthProvider>
             <NextNProgressbar>{children}</NextNProgressbar>
           </AuthProvider>
-        </ConfigProvider>
+        </AppConfigProvider>
       </body>
     </html>
   );

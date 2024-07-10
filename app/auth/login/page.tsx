@@ -7,6 +7,7 @@ import { signIn } from "@/actions/auth";
 import { useRouter } from "next/navigation";
 import { useAppContext } from "@/context/AuthContext";
 import { ILoginArguments } from "@/services/users/models";
+import Link from "next/link";
 
 const formItemLayout = {
   labelCol: {
@@ -27,9 +28,12 @@ export default function Login() {
   const router = useRouter();
 
   async function onFinish(data: ILoginArguments) {
-    const formData = new FormData();
     const result = await signIn(data);
-    setResultMessage(result);
+    setResultMessage(result.reportMessage);
+    if (result.userInfo) {
+      loginUser(result.userInfo); // setUser(user); in context file
+      router.push("/");
+    }
   }
   useEffect(() => {
     messageApi.open({
@@ -37,8 +41,6 @@ export default function Login() {
       content: resultMessage?.notify?.message,
     });
     if (resultMessage?.notify?.status === "success") {
-      loginUser(resultMessage.userInfo); // setUser(user); in context file
-      router.push("/");
     }
   }, [resultMessage]);
   return (
@@ -55,9 +57,9 @@ export default function Login() {
         </Typography.Title>
         <div className="topBoxTxt">
           <span>حساب کاربری ندارید؟</span>
-          <Typography.Link className="registerTxt" href="/auth/register">
+          <Link className="registerTxt" href="/auth/register">
             ثبت نام کنید
-          </Typography.Link>
+          </Link>
         </div>
         <Form.Item
           label="ایمیل"
@@ -83,9 +85,7 @@ export default function Login() {
           </Button>
         </Form.Item>
         <Flex justify="space-between" align="center">
-          <Typography.Link href="/auth/login/cellphone">
-            ورود با موبایل
-          </Typography.Link>
+          <Link href="/auth/login/cellphone">ورود با موبایل</Link>
           <Button type="primary" htmlType="submit">
             ورود
           </Button>

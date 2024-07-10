@@ -6,8 +6,8 @@ export interface IFormState {
     status: NoticeType | undefined;
     message: string;
   };
-  userInfo?: IUserInfo;
-  userCellPhone?: string;
+  // userInfo?: IUserInfo;
+  // userCellPhone?: string;
 }
 
 // userInfo: {

@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { Nav } from "./style";
 import { useAppContext } from "@/context/AuthContext";
-import { logout } from "@/actions/auth";
 import { useRouter } from "next/navigation";
 
 export default function Menu() {
@@ -43,7 +42,6 @@ export default function Menu() {
               <button
                 className="menuLink signUp"
                 onClick={async () => {
-                  await logout();
                   logoutUser();
                   router.push("/");
                 }}

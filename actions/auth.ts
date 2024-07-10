@@ -5,11 +5,11 @@ import {
   IPhoneArguments,
   IOtpArguments,
   ILoginArguments,
+  IUserInfo,
 } from "@/services/users/models";
 import { UsersUrls } from "@/services/users/urls";
 import { getFetch, postFetch } from "@/utils/fetch";
 import { IFormState } from "@/utils/stateForm";
-import { message } from "antd";
 import { cookies } from "next/headers";
 import { COOKIE_USER_NAME } from "@/constants/cookies";
 
@@ -57,7 +57,7 @@ async function signIn(data: ILoginArguments) {
         message: res.errors[0].message,
       },
     };
-    return reportMessage;
+    return { reportMessage };
   }
   cookies().set({
     name: "loginToken",
@@ -69,48 +69,36 @@ async function signIn(data: ILoginArguments) {
       status: "success",
       message: "با موفقیت وارد شدید",
     },
-    userInfo: res.user,
   };
-  return reportMessage;
+  const userInfo: IUserInfo = res.user;
+
+  return { reportMessage, userInfo };
 }
 
 async function me() {
-  // let reportMessage: IFormState = { userInfo: undefined };
-  let reportMessage: IFormState = {};
   const token = cookies().get("loginToken");
 
   //token is undefind or null:
   if (!token) {
-    reportMessage.userInfo = undefined;
-    return reportMessage;
+    return undefined;
   }
   const res = await getFetch("/users/me", {
     Authorization: `Bearer ${token.value}`,
   });
-
-  if (!res.user) {
-    reportMessage.userInfo = undefined;
-    return reportMessage;
-  }
-
-  reportMessage.userInfo = res.user;
-  return reportMessage;
+  const userInfo: IUserInfo | undefined = res.user;
+  return userInfo;
 }
 
 async function logout() {
   const token = cookies().get("loginToken");
 
   //token is undefind or null:
-  if (!token) {
-    const reportMessage: IFormState = {
-      userInfo: undefined,
-    };
-    return reportMessage;
-  }
+  if (!token) return;
+
   const res = await postFetch("/users/logout", {
     Authorization: `Bearer ${token.value}`,
   });
-  if (res.message) {
+  if (res.status === 200) {
     const reportMessage: IFormState = {
       notify: {
         status: "success",
@@ -142,7 +130,7 @@ async function signInWithPhone(data: IPhoneArguments) {
   if (!pattern.test(phoneNumber)) {
     reportMessage.notify!.status = "error";
     reportMessage.notify!.message = "فرمت نامعتبر";
-    return reportMessage;
+    return { reportMessage };
   }
   const res = await postFetch(UsersUrls.loginByPhoneNumber, {
     phoneNumber,
@@ -153,13 +141,12 @@ async function signInWithPhone(data: IPhoneArguments) {
     reportMessage.notify!.status = "error";
     // reportMessage.notify!.message = res.message;
     reportMessage.notify!.message = "ابتدا ثبت نام کنید";
-    return reportMessage;
+    return { reportMessage };
   }
   //"success": true
   reportMessage.notify!.status = "success";
   reportMessage.notify!.message = "کد ورود با موفقیت ارسال شد";
-  reportMessage.userCellPhone = phoneNumber;
-  return reportMessage;
+  return { reportMessage, phoneNumber };
 }
 
 async function confirmOtp(data: IOtpArguments) {
@@ -183,12 +170,12 @@ async function confirmOtp(data: IOtpArguments) {
   if (res.success === false) {
     reportMessage.notify!.status = "error";
     reportMessage.notify!.message = res.message;
-    return reportMessage;
+    return { reportMessage };
   }
   if (res.error) {
     reportMessage.notify!.status = "error";
     reportMessage.notify!.message = res.error;
-    return reportMessage;
+    return { reportMessage };
   }
   cookies().set({
     name: COOKIE_USER_NAME,
@@ -197,7 +184,7 @@ async function confirmOtp(data: IOtpArguments) {
   });
   reportMessage.notify!.status = "success";
   reportMessage.notify!.message = "با موفقیت وارد شدید";
-  reportMessage.userInfo = res.doc.user;
-  return reportMessage;
+  const userInfo: IUserInfo = res.doc.user;
+  return { reportMessage, userInfo };
 }
 export { signUp, signIn, me, signInWithPhone, confirmOtp, logout };

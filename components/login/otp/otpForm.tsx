@@ -1,4 +1,5 @@
 import { confirmOtp } from "@/actions/auth";
+import { useLogin } from "@/app/auth/login/context";
 import { useAppContext } from "@/context/AuthContext";
 import { IOtpArguments } from "@/services/users/models";
 import { IFormState } from "@/utils/stateForm";
@@ -22,14 +23,18 @@ export default function OtpForm() {
   const [form] = Form.useForm();
   const [resultMessage, setResultMessage] = useState<IFormState>();
   const { values, func } = useAppContext();
-  const { userCellPhone } = values;
+  const { userCellPhone } = useLogin();
   const { loginUser } = func;
   const router = useRouter();
 
   async function onFinish(data: IOtpArguments) {
     data.cellphone = userCellPhone;
     const result = await confirmOtp(data);
-    setResultMessage(result);
+    setResultMessage(result.reportMessage);
+    if (result.userInfo) {
+      loginUser(result.userInfo);
+      router.push("/");
+    }
   }
 
   useEffect(() => {
@@ -37,10 +42,6 @@ export default function OtpForm() {
       type: resultMessage?.notify?.status,
       content: resultMessage?.notify?.message,
     });
-    if (resultMessage?.notify?.status === "success") {
-      loginUser(resultMessage.userInfo); // setUser(user); in context file
-      router.push("/");
-    }
   }, [resultMessage]);
   return (
     <>

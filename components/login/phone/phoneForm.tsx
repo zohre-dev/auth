@@ -1,4 +1,5 @@
 import { signInWithPhone } from "@/actions/auth";
+import { useLogin } from "@/app/auth/login/context";
 import { useAppContext } from "@/context/AuthContext";
 import { IPhoneArguments } from "@/services/users/models";
 import { IFormState } from "@/utils/stateForm";
@@ -22,11 +23,14 @@ export default function PhoneForm({ setStep }: ChildProps) {
   const [messageApi, contextHolder] = message.useMessage();
   const [form] = Form.useForm();
   const [resultMessage, setResultMessage] = useState<IFormState>();
-  const { dispatch } = useAppContext();
-  const { setCellPhone } = dispatch;
+  const { setCellPhone } = useLogin();
   async function onFinish(data: IPhoneArguments) {
     const result = await signInWithPhone(data);
-    setResultMessage(result);
+    setResultMessage(result.reportMessage);
+    if (result.phoneNumber) {
+      setStep(2);
+      setCellPhone(result.phoneNumber);
+    }
   }
 
   useEffect(() => {
@@ -35,8 +39,6 @@ export default function PhoneForm({ setStep }: ChildProps) {
       content: resultMessage?.notify?.message,
     });
     if (resultMessage?.notify?.status === "success") {
-      setStep(2);
-      setCellPhone(resultMessage.userCellPhone);
     }
   }, [resultMessage]);
   return (

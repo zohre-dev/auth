@@ -11,6 +11,8 @@ import {
   useEffect,
   useState,
 } from "react";
+import { logout } from "@/actions/auth";
+import { Skeleton, Spin } from "antd";
 
 /**************************************************************************************** */
 // user: {
@@ -31,11 +33,8 @@ import {
 interface IContext {
   values: {
     user: IUserInfo | undefined;
-    userCellPhone: string | undefined;
   };
-  dispatch: {
-    setCellPhone: Dispatch<SetStateAction<string | undefined>>;
-  };
+
   func: {
     loginUser: (user: IUserInfo | undefined) => void;
     logoutUser: () => void;
@@ -45,11 +44,8 @@ interface IContext {
 const AuthContext = createContext<IContext>({
   values: {
     user: undefined,
-    userCellPhone: undefined,
   },
-  dispatch: {
-    setCellPhone: () => {},
-  },
+
   func: {
     loginUser: () => {},
     logoutUser: () => {},
@@ -58,23 +54,21 @@ const AuthContext = createContext<IContext>({
 /**************************************************************************************** */
 export const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
   const [user, setUser] = useState<IUserInfo>();
-  const [cellPhone, setCellPhone] = useState<string | undefined>();
-
+  const [loading, setLoading] = useState<boolean>(true);
   const loginContext = (user: IUserInfo | undefined) => {
     setUser(user);
   };
-  const logoutContext = () => {
-    setUser(undefined);
+  const logoutContext = async () => {
+    await logout().finally(() => {
+      setUser(undefined);
+    });
   };
 
   const contextValues: IContext = {
     values: {
       user: user,
-      userCellPhone: cellPhone,
     },
-    dispatch: {
-      setCellPhone,
-    },
+
     func: {
       loginUser: loginContext,
       logoutUser: logoutContext,
@@ -82,19 +76,26 @@ export const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
   };
   useEffect(() => {
     const checkUserLoggedIn = async () => {
-      const result = await me();
+      try {
+        setLoading(true);
+        const result = await me();
 
-      if (result?.userInfo) {
-        loginContext(result.userInfo);
-      } else {
-        loginContext(undefined);
+        if (result) {
+          loginContext(result);
+        } else {
+          loginContext(undefined);
+        }
+      } catch (err) {
+        console.log(err);
+      } finally {
+        setLoading(false);
       }
     };
     checkUserLoggedIn();
   }, []);
   return (
     <AuthContext.Provider value={contextValues}>
-      {children}
+      {loading ? <Spin fullscreen /> : children}
     </AuthContext.Provider>
   );
 };
