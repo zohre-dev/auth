@@ -11,6 +11,7 @@ import { getFetch, postFetch } from "@/utils/fetch";
 import { IFormState } from "@/utils/stateForm";
 import { message } from "antd";
 import { cookies } from "next/headers";
+import { COOKIE_USER_NAME } from "@/constants/cookies";
 
 async function signUp(data: IRegisterArguments) {
   const name = data.name;
@@ -189,6 +190,11 @@ async function confirmOtp(data: IOtpArguments) {
     reportMessage.notify!.message = res.error;
     return reportMessage;
   }
+  cookies().set({
+    name: COOKIE_USER_NAME,
+    value: res.doc.token,
+    httpOnly: true,
+  });
   reportMessage.notify!.status = "success";
   reportMessage.notify!.message = "با موفقیت وارد شدید";
   reportMessage.userInfo = res.doc.user;
