@@ -1,4 +1,5 @@
 import { signInWithPhone } from "@/actions/auth";
+import { Step } from "@/app/auth/login/cellphone/step";
 import { useLogin } from "@/app/auth/login/context";
 import { useAppContext } from "@/context/AuthContext";
 import { IPhoneArguments } from "@/services/users/models";
@@ -7,7 +8,7 @@ import { Button, Flex, Form, Input, message, Typography } from "antd";
 import { useEffect, useState, Dispatch } from "react";
 
 interface ChildProps {
-  setStep: Dispatch<React.SetStateAction<number>>;
+  setStep: Dispatch<React.SetStateAction<string>>;
 }
 const formItemLayout = {
   labelCol: {
@@ -28,7 +29,7 @@ export default function PhoneForm({ setStep }: ChildProps) {
     const result = await signInWithPhone(data);
     setResultMessage(result.reportMessage);
     if (result.phoneNumber) {
-      setStep(2);
+      setStep(Step.otpView); //2
       setCellPhone(result.phoneNumber);
     }
   }

@@ -10,8 +10,8 @@ export default function NextNProgressbar({
       {children}
       <ProgressBar
         height="4px"
-        color="#778af5"
-        options={{ showSpinner: true }}
+        color="#A69488"
+        options={{ showSpinner: false }}
         shallowRouting
       />
     </>

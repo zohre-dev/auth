@@ -3,6 +3,7 @@ import "./globals.css";
 
 import NextNProgressbar from "@/libraries/NextNProgressbar";
 import { AppConfigProvider } from "@/components/Providers/ConfigProvider";
+import StyledComponentsRegistry from "./styled-components/registry";
 
 export default function RootLayout({
   children,
@@ -12,7 +13,9 @@ export default function RootLayout({
       <body>
         <AppConfigProvider>
           <AuthProvider>
-            <NextNProgressbar>{children}</NextNProgressbar>
+            <NextNProgressbar>
+              <StyledComponentsRegistry>{children}</StyledComponentsRegistry>;
+            </NextNProgressbar>
           </AuthProvider>
         </AppConfigProvider>
       </body>

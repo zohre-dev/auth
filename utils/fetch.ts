@@ -25,6 +25,7 @@ const postFetch = async (
   body: Record<string, any>,
   headers?: HeadersInit
 ) => {
+  const bodyContent = Object.keys(body).length > 0 ? body : {};
   try {
     const response = await fetch(`${baseUrl}${url}`, {
       method: "POST",
@@ -34,7 +35,7 @@ const postFetch = async (
         ...headers,
       },
       cache: "no-store",
-      body: JSON.stringify(body),
+      body: JSON.stringify(bodyContent),
     });
     const data = await response.json();
 

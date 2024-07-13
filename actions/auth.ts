@@ -89,35 +89,6 @@ async function me() {
   return userInfo;
 }
 
-async function logout() {
-  const token = cookies().get("loginToken");
-
-  //token is undefind or null:
-  if (!token) return;
-
-  const res = await postFetch("/users/logout", {
-    Authorization: `Bearer ${token.value}`,
-  });
-  if (res.status === 200) {
-    const reportMessage: IFormState = {
-      notify: {
-        status: "success",
-        message: "خروج با موفقیت",
-      },
-    };
-    return reportMessage;
-  } else {
-    const reportMessage: IFormState = {
-      notify: {
-        status: "error",
-        message: res.errors[0].message,
-      },
-    };
-    return reportMessage;
-  }
-}
-
-//data: { cellphone: '09350070000' }
 async function signInWithPhone(data: IPhoneArguments) {
   let reportMessage: IFormState = {
     notify: {
@@ -186,5 +157,38 @@ async function confirmOtp(data: IOtpArguments) {
   reportMessage.notify!.message = "با موفقیت وارد شدید";
   const userInfo: IUserInfo = res.doc.user;
   return { reportMessage, userInfo };
+}
+
+async function logout() {
+  const token = cookies().get(COOKIE_USER_NAME);
+
+  //token is undefind or null:
+  if (!token) return;
+
+  const res = await postFetch(
+    UsersUrls.logout,
+    {},
+    {
+      Authorization: `Bearer ${token.value}`,
+    }
+  );
+  if (res.message) {
+    cookies().delete(COOKIE_USER_NAME);
+    const reportMessage: IFormState = {
+      notify: {
+        status: "success",
+        message: "خروج با موفقیت",
+      },
+    };
+    return reportMessage;
+  } else {
+    const reportMessage: IFormState = {
+      notify: {
+        status: "error",
+        message: res.errors[0].message,
+      },
+    };
+    return reportMessage;
+  }
 }
 export { signUp, signIn, me, signInWithPhone, confirmOtp, logout };

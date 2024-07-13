@@ -6,9 +6,10 @@ import { useState } from "react";
 import PhoneForm from "@/components/login/phone/phoneForm";
 import OtpForm from "@/components/login/otp/otpForm";
 import { LoginProvider } from "../context";
+import { Step } from "./step";
 
 export default function CellLoginForm() {
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState<string>(Step.phoneView); // "1"
 
   return (
     <LoginProvider>
@@ -23,8 +24,8 @@ export default function CellLoginForm() {
               ثبت نام کنید
             </Typography.Link>
           </div>
-          {step === 1 && <PhoneForm setStep={setStep} />}
-          {step === 2 && <OtpForm />}
+          {step === Step.phoneView && <PhoneForm setStep={setStep} />}
+          {step === Step.otpView && <OtpForm />}
         </div>
       </CellFormContainer>
     </LoginProvider>
