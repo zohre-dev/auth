@@ -11,13 +11,13 @@ export default function RootLayout({
   return (
     <html lang="fa" dir="rtl">
       <body>
-        <AppConfigProvider>
-          <AuthProvider>
-            <NextNProgressbar>
-              <StyledComponentsRegistry>{children}</StyledComponentsRegistry>;
-            </NextNProgressbar>
-          </AuthProvider>
-        </AppConfigProvider>
+        <StyledComponentsRegistry>
+          <AppConfigProvider>
+            <AuthProvider>
+              <NextNProgressbar>{children}</NextNProgressbar>
+            </AuthProvider>
+          </AppConfigProvider>
+        </StyledComponentsRegistry>
       </body>
     </html>
   );

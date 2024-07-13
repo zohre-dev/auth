@@ -29,10 +29,8 @@ export default function Menu() {
             مبلمان
           </Link>
         </li>
-        {/* && Object.keys(user).length > 0 */}
         {user ? (
           <>
-            {/* {user["name"]} */}
             <li className="menuItem">
               <Link className="menuLink signIn" href="/profile">
                 پروفایل

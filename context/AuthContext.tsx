@@ -12,7 +12,7 @@ import {
   useState,
 } from "react";
 import { logout } from "@/actions/auth";
-import { Skeleton, Spin } from "antd";
+import { Spin } from "antd";
 
 /**************************************************************************************** */
 // user: {
@@ -40,7 +40,7 @@ interface IContext {
     logoutUser: () => void;
   };
 }
-/***************************   create context and set initial values      ******************** */
+/**********************  create context and set initial values      ******************** */
 const AuthContext = createContext<IContext>({
   values: {
     user: undefined,
@@ -95,7 +95,8 @@ export const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
   }, []);
   return (
     <AuthContext.Provider value={contextValues}>
-      {loading ? <Spin fullscreen /> : children}
+      {children}
+      {/* {loading ? <Spin fullscreen /> : children} */}
     </AuthContext.Provider>
   );
 };

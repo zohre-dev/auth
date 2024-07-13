@@ -22,21 +22,23 @@ const getFetch = async (url: string, headers?: HeadersInit) => {
 
 const postFetch = async (
   url: string,
-  body: Record<string, any>,
+  body?: Record<string, any>,
   headers?: HeadersInit
 ) => {
-  const bodyContent = Object.keys(body).length > 0 ? body : {};
+  // const bodyContent = Object.keys(body).length > 0 ? body : {};
   try {
-    const response = await fetch(`${baseUrl}${url}`, {
+    console.log(body);
+    const options: any = {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
         Accept: "application/json",
         ...headers,
       },
       cache: "no-store",
-      body: JSON.stringify(bodyContent),
-    });
+      body: body,
+    };
+    console.log("url", `${baseUrl}${url}`);
+    const response = await fetch(`${baseUrl}${url}`, options);
     const data = await response.json();
 
     return data;

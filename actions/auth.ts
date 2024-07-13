@@ -107,6 +107,8 @@ async function signInWithPhone(data: IPhoneArguments) {
     phoneNumber,
   });
 
+  console.log(" res is ", res);
+  console.log(phoneNumber);
   //"success": false
   if (!res.success) {
     reportMessage.notify!.status = "error";
@@ -165,13 +167,9 @@ async function logout() {
   //token is undefind or null:
   if (!token) return;
 
-  const res = await postFetch(
-    UsersUrls.logout,
-    {},
-    {
-      Authorization: `Bearer ${token.value}`,
-    }
-  );
+  const res = await postFetch(UsersUrls.logout, undefined, {
+    Authorization: `Bearer ${token.value}`,
+  });
   if (res.message) {
     cookies().delete(COOKIE_USER_NAME);
     const reportMessage: IFormState = {

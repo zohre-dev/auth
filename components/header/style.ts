@@ -17,3 +17,5 @@ export const PicWarraper = styled.div`
     right: 117px;
   }
 `;
+
+/* background-image: url(${(props) => props.bgImage}); */
