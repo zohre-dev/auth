@@ -4,6 +4,7 @@ import { useAppContext } from "@/context/AuthContext";
 import { IOtpArguments } from "@/services/users/models";
 import { IFormState } from "@/utils/stateForm";
 import { Button, Form, Input, message, Typography, Flex } from "antd";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -59,7 +60,7 @@ export default function OtpForm() {
           name="otp"
           rules={[{ required: true, message: "کد الزامی" }]}
         >
-          <Input />
+          <Input.OTP length={6} autoFocus />
         </Form.Item>
         <Form.Item
           label="گذرواژه"
@@ -71,7 +72,7 @@ export default function OtpForm() {
 
         <Form.Item>
           <Flex justify="space-between" align="center">
-            <Typography.Link href="/auth/login">ورود با ایمیل</Typography.Link>
+            <Link href="/auth/login">ورود با ایمیل</Link>
             <Button type="primary" htmlType="submit">
               ورود
             </Button>

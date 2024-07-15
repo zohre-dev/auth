@@ -25,19 +25,19 @@ const postFetch = async (
   body?: Record<string, any>,
   headers?: HeadersInit
 ) => {
-  // const bodyContent = Object.keys(body).length > 0 ? body : {};
+  //  const bodyContent = Object.keys(body).length > 0 ? body : {};
   try {
     console.log(body);
     const options: any = {
       method: "POST",
       headers: {
+        "Content-Type": "application/json",
         Accept: "application/json",
         ...headers,
       },
       cache: "no-store",
-      body: body,
+      body: body ? JSON.stringify(body) : undefined,
     };
-    console.log("url", `${baseUrl}${url}`);
     const response = await fetch(`${baseUrl}${url}`, options);
     const data = await response.json();
 
